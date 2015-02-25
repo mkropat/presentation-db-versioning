@@ -9,59 +9,196 @@
   <body>
     <article>
       <section>
-        <h1>Database Versioning: It Doesn't Have To Be Hard</h1>
+        <h2>Database Versioning:</h2>
+        <h2>It Doesn't Have<br>To Be Hard</h2><br>
+        <p>By this guy:</p>
+        <p><a href="http://twitter.com/MichaelKropat">@MichaelKropat</a></p>
       </section>
       <section>
-        <h2>Keyboard Interaction</h2>
-        <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-keys">bespoke-keys</a></h3>
+        <h2 class="bullet">Two Part Talk</h2>
+        <ol>
+          <li>Why version the database?</li>
+          <li>How I've done it in the past</li>
+          <p class="bullet">(a.k.a poor man's db versioning)</p>
+        </ol>
       </section>
       <section>
-        <h2>Touch Interaction</h2>
-        <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-touch">bespoke-touch</a></h3>
-      </section>
-      <section>
-        <h2>Responsive Slides</h2>
-        <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-scale">bespoke-scale</a></h3>
-      </section>
-      <section>
-        <h2>Bullet List</h2>
-        <h3 class="bullet">Powered by <a href="https://github.com/markdalgleish/bespoke-bullets">bespoke-bullets</a></h3>
+        <h2 class="bullet">Three Problems When You Don't Version</h2>
         <ul>
-          <li>Bullet 1</li>
-          <li>Bullet 2</li>
-          <li>Bullet 3</li>
+          <li>Actually there are more reasons</li>
+          <li>But these are the 3 ones I care about</li>
         </ul>
       </section>
       <section>
-        <h2>Syntax Highlighting</h2>
-        <h3>Powered by <a href="http://twitter.com/LeaVerou">Lea Verou</a>'s <a href="https://github.com/LeaVerou/prism">Prism</a></h3>
-        <pre><code class="language-javascript">bespoke.from('article', [
-  classes(),
-  keys(),
-  touch(),
-  bullets('li, .bullet')
-]);
+        <h3>First Problem:</h3>
+        <h2>Have To Be a Detective</h2>
+        <p>(Any time a db change is made)</p>
+      </section>
+      <section>
+        <h2>Scenario</h2>
+        <ul>
+          <li>I'm happily developing my feature in a branch</li>
+          <li>I merge in the latest code from <code>master</code></li>
+          <li>My local dev website now starts giving an error</li>
+          <li>The error says database table <code>Foo</code> is missing</li>
+          <li>Now what?</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Scenario (Cont.)</h2>
+        <p class="bullet">I now have a few options:</p>
+        <ol>
+          <li>Blow away my dev database and re-run initialization script, or...</li>
+          <li>Grep the source code for <code>Foo</code>
+            <p class="bullet">(And hope I find a migration script for <code>Foo</code>)</p>
+          </li>
+          <li>Ask around until I find out who made the change
+            <p class="bullet">(and get them to fix it)</p>
+          </li>
+        </ol>
+      </section>
+      <section>
+        <h3><strike>First Problem:</strike></h3>
+        <h2><strike>Have to be a detective</strike></h2>
+        <p><strike>(Any time a db change is made)</strike></p>
+        <h3>We Want:</h3>
+        <h2>A Defined Upgrade Path</h2>
+      </section>
+      <section>
+        <h3>Second Problem:</h3>
+        <h2>Db Initialization Script Is Unreliable</h2>
+      </section>
+      <section>
+        <h2>Scenario</h2>
+        <ul>
+          <li>I'm happily developing my feature in a branch</li>
+          <li>I need to create a new database table <code>Bar</code></li>
+          <li>I write a migration <code>.sql</code> script to create the table</li>
+          <li>I remember to check the migration script in, yet...</li>
+          <li>Next person to init the db gets an error running the site... oops</li>
+        </ul>
+      </section>
+      <section>
+        <h3><strike>Second Problem:</strike></h3>
+        <h2><strike>Db Initialization Script Is Unreliable</strike></h2>
+        <h3>We Want:</h3>
+        <h2>An Always Up-To-Date Db Initializaiton Procedure</h2>
+      </section>
+      <section>
+        <h3>Third Problem:</h3>
+        <h2>Tables Disappear Without a Trace</h2>
+      </section>
+      <section>
+        <h2 class="bullet">True Story</h2>
+        <ul>
+          <li>I'm testing out someone's branch</li>
+          <li>Done with that, I checkout my feature branch</li>
+          <li>Site no longer runs</li>
+          <li>Gives error: <code>Invalid column name 'sharePointStorage'</code></li>
+          <li>No references to <code>sharePointStorage</code> anywhere :/</li>
+        </ul>
+      </section>
+      <section>
+        <h3><strike>Third Problem:</strike></h3>
+        <h2><strike>Tables Disappear Without a Trace</strike></h2>
+        <h3>We Want:</h3>
+        <h2>A History Of Changes</h2>
+      </section>
+      <section>
+        <h2 class="bullet">What Versioning Gives Us</h2>
+        <ol>
+          <li>A Defined Upgrade Path</li>
+          <li>An Always Up-To-Date Db Initializaiton Procedure</li>
+          <li>A History Of Changes</li>
+        </ol>
+      </section>
+      <section>
+        <h2 class="bullet">Products Exist</h2>
+        <ul>
+          <li>Visual Studio Database Projects</li>
+          <li>Liquibase</li>
+          <li>Redgate</li>
+        </ul>
+        <p class="bullet">(I don't have experience with any of these)</p>
+      </section>
+      <section>
+        <h2>Products Exist (Cont.)</h2>
+        <p class="bullet">I want to show is how easy it is to version</p>
+        <div class="bullet">
+          <h4>There is NO reason not to version</h4>
+          <p>(However you choose to do it)</p>
+        </div>
+      </section>
+      <section>
+        <h2 class="bullet">How I've Done Versioning In The Past</h2>
+        <p class="bullet">(a.k.a poor man's db versioning)</p>
+      </section>
+      <section>
+        <h2>Start With Migration Scripts</h2>
+        <pre><code class="language-css">20150221-01-create-facts.sql
+20150221-02-populate-facts.sql
+20150222-disallow-nulls.sql
 </code></pre>
       </section>
-      <section data-bespoke-hash="named-route">
-        <h2>Named Route</h2>
-        <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-hash">bespoke-hash</a></h3>
-        <p>Look up! This route has been named with a <em>'data-bespoke-hash'</em> attribute.</p>
-      </section>
-      <section data-bespoke-backdrop="emphatic" class="emphatic-text">
-        <h2>Emphatic Slide!</h2>
-        <h3>Powered by <a href="https://github.com/markdalgleish/bespoke-backdrop">bespoke-backdrop</a></h3>
+      <section>
+        <h2>The Algorithm</h2>
+        <pre><code class="language-powershell">$db = Open-Database $Server $Database
+$original = Get-DbVersion $db
+
+$migrations = Get-SchemaMigrations $SchemaDir |
+    where { $_.Version -gt $original } |
+    sort -Property Version
+    
+Invoke-Migrations $db $migrations</code></pre>
       </section>
       <section>
-        <h2 class="bullet">Just the beginning...</h2><br>
+        <pre><code class="language-powershell">function Invoke-Migrations($Database, $Migrations) {
+    try {
+        foreach ($m in $Migrations) {
+            Invoke-Migration $Database $m
+        }
+    }
+    catch {
+        throw $_.Exception
+    }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="language-powershell">function Invoke-Migration($Database, $Migration) {
+    $conn = Get-DbConnection $Database
+    $script = Get-Content $Migration.Path -Raw
+    
+    $conn.BeginTransaction()
+    
+        $Database.ExecuteNonQuery($script)
+        Set-DbVersion $Database $Migration.Version
+        
+    $conn.CommitTransaction()
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Source</h2>
+        <p>Proof of concept, if you want it:</p>
+        <p><a href="https://gist.github.com/mkropat/1ba7ffd1d14f55f63fb3">https://gist.github.com/mkropat/1ba7ffd1d14f55f63fb3</a></p>
+      </section>
+      <section>
+        <h2>Rollbacks</h2>
         <ul>
-          <li>Edit <a href="http://jade-lang.com/">Jade</a> markup in <em>'src/index.jade'</em></li>
-          <li>Edit <a href="http://learnboost.github.io/stylus/">Stylus</a> styles in <em>'src/styles/main.styl'</em></li>
-          <li>Edit JavaScript in <em>'src/scripts/main.js'</em></li>
-        </ul><br>
-        <ul>
-          <li><strong>Enjoy! :)</strong><a href="http://twitter.com/markdalgleish"> -@markdalgleish</a></li>
+          <li>Not supported in proof of concept</li>
+          <li>Straightforward to add</li>
+          <li>(Create rollback <code>.sql</code> script for each migration)</li>
         </ul>
+      </section>
+      <section>
+        <h2 class="bullet">You Can Do It</h2>
+        <p class="bullet">(It's not hard)</p>
+        <h4 class="bullet">There is NO reason not to version</h4>
+        <p class="bullet">(However you choose to do it)</p>
+      </section>
+      <section>
+        <h2>Questions?</h2>
       </section>
     </article>
     <script src="build/build.js"></script>
