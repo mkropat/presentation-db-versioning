@@ -12,60 +12,195 @@ html
     article
 
       section
-        h1 Database Versioning: It Doesn't Have To Be Hard
-
-      section
-        h2 Keyboard Interaction
-        h3 Powered by <a href="https://github.com/markdalgleish/bespoke-keys">bespoke-keys</a>
-
-      section
-        h2 Touch Interaction
-        h3 Powered by <a href="https://github.com/markdalgleish/bespoke-touch">bespoke-touch</a>
-
-      section
-        h2 Responsive Slides
-        h3 Powered by <a href="https://github.com/markdalgleish/bespoke-scale">bespoke-scale</a>
-
-      section
-        h2 Bullet List
-        h3.bullet Powered by <a href="https://github.com/markdalgleish/bespoke-bullets">bespoke-bullets</a>
-        ul
-          li Bullet 1
-          li Bullet 2
-          li Bullet 3
-
-      section
-        h2 Syntax Highlighting
-        h3 Powered by <a href="http://twitter.com/LeaVerou">Lea Verou</a>'s <a href="https://github.com/LeaVerou/prism">Prism</a>
-        pre
-          code.language-javascript.
-            bespoke.from('article', [
-              classes(),
-              keys(),
-              touch(),
-              bullets('li, .bullet')
-            ]);
-
-      section(data-bespoke-hash='named-route')
-        h2 Named Route
-        h3 Powered by <a href="https://github.com/markdalgleish/bespoke-hash">bespoke-hash</a>
-        p Look up! This route has been named with a <em>'data-bespoke-hash'</em> attribute.
-
-      section.emphatic-text(data-bespoke-backdrop='emphatic')
-        h2 Emphatic Slide!
-        h3 Powered by <a href="https://github.com/markdalgleish/bespoke-backdrop">bespoke-backdrop</a>
-
-      section
-        h2.bullet Just the beginning...
+        h2 Database Versioning:
+        h2
+          | It Doesn't Have
+          br
+          | To Be Hard
         br
+        p By this guy:
+        p
+          a(href='http://twitter.com/MichaelKropat') @MichaelKropat
+
+      section
+        h2.bullet Two Part Talk
+        ol
+          li Why version the database?
+          li How I've done it in the past
+          p.bullet (a.k.a poor man's db versioning)
+
+      section
+        h2.bullet Three Problems When You Don't Version
         ul
-          li Edit <a href="http://jade-lang.com/">Jade</a> markup in <em>'src/index.jade'</em>
-          li Edit <a href="http://learnboost.github.io/stylus/">Stylus</a> styles in <em>'src/styles/main.styl'</em>
-          li Edit JavaScript in <em>'src/scripts/main.js'</em>
-        br
+          li Actually there are more reasons
+          li But these are the 3 ones I care about
+
+      section
+        h3 First Problem:
+        h2 Have To Be a Detective
+        p (Any time a db change is made)
+
+      section
+        h2 Scenario
         ul
+          li I'm happily developing my feature in a branch
+          li I merge in the latest code from <code>master</code>
+          li My local dev website now starts giving an error
+          li The error says database table <code>Foo</code> is missing
+          li Now what?
+
+      section
+        h2 Scenario (Cont.)
+        p.bullet I now have a few options:
+        ol
+          li Blow away my dev database and re-run initialization script, or...
           li
-            strong Enjoy! :)
-            a(href='http://twitter.com/markdalgleish')  -@markdalgleish
+            | Grep the source code for <code>Foo</code>
+            p.bullet (And hope I find a migration script for <code>Foo</code>)
+          li
+            | Ask around until I find out who made the change
+            p.bullet (and get them to fix it)
+
+      section
+        h3 <strike>First Problem:</strike>
+        h2 <strike>Have to be a detective</strike>
+        p <strike>(Any time a db change is made)</strike>
+        h3 We Want:
+        h2 A Defined Upgrade Path
+
+      section
+        h3 Second Problem:
+        h2 Db Initialization Script Is Unreliable
+
+      section
+        h2 Scenario
+        ul
+          li I'm happily developing my feature in a branch
+          li I need to create a new database table <code>Bar</code>
+          li I write a migration <code>.sql</code> script to create the table
+          li I remember to check the migration script in, yet...
+          li Next person to init the db gets an error running the site... oops
+
+      section
+        h3 <strike>Second Problem:</strike>
+        h2 <strike>Db Initialization Script Is Unreliable</strike>
+        h3 We Want:
+        h2 An Always Up-To-Date Db Initializaiton Procedure
+
+      section
+        h3 Third Problem:
+        h2 Tables Disappear Without a Trace
+
+      section
+        h2.bullet True Story
+        ul
+          li I'm testing out someone's branch
+          li Done with that, I checkout my feature branch
+          li Site no longer runs
+          li Gives error: <code>Invalid column name 'sharePointStorage'</code>
+          li No references to <code>sharePointStorage</code> anywhere :/
+
+      section
+        h3 <strike>Third Problem:</strike>
+        h2 <strike>Tables Disappear Without a Trace</strike>
+        h3 We Want:
+        h2 A History Of Changes
+
+      section
+        h2.bullet What Versioning Gives Us
+        ol
+          li A Defined Upgrade Path
+          li An Always Up-To-Date Db Initializaiton Procedure
+          li A History Of Changes
+
+      section
+        h2.bullet Products Exist
+        ul
+          li Visual Studio Database Projects
+          li Liquibase
+          li Redgate
+        p.bullet (I don't have experience with any of these)
+
+      section
+        h2 Products Exist (Cont.)
+        p.bullet I want to show is how easy it is to version
+        div.bullet
+          h4 There is NO reason not to version
+          p (However you choose to do it)
+
+      section
+        h2.bullet How I've Done Versioning In The Past
+        p.bullet (a.k.a poor man's db versioning)
+
+      section
+        h2 Start With Migration Scripts
+        pre
+          code.language-css.
+            20150221-01-create-facts.sql
+            20150221-02-populate-facts.sql
+            20150222-disallow-nulls.sql
+
+      section
+        h2 The Algorithm
+        pre
+          code.language-powershell.
+            $db = Open-Database $Server $Database
+            $original = Get-DbVersion $db
+
+            $migrations = Get-SchemaMigrations $SchemaDir |
+                where { $_.Version -gt $original } |
+                sort -Property Version
+
+            Invoke-Migrations $db $migrations
+      section
+        pre
+          code.language-powershell.
+            function Invoke-Migrations($Database, $Migrations) {
+                try {
+                    foreach ($m in $Migrations) {
+                        Invoke-Migration $Database $m
+                    }
+                }
+                catch {
+                    throw $_.Exception
+                }
+            }
+
+      section
+        pre
+          code.language-powershell.
+            function Invoke-Migration($Database, $Migration) {
+                $conn = Get-DbConnection $Database
+                $script = Get-Content $Migration.Path -Raw
+
+                $conn.BeginTransaction()
+
+                    $Database.ExecuteNonQuery($script)
+                    Set-DbVersion $Database $Migration.Version
+
+                $conn.CommitTransaction()
+            }
+
+      section
+        h2 Source
+        p Proof of concept, if you want it:
+        p
+          a(href='https://gist.github.com/mkropat/1ba7ffd1d14f55f63fb3') https://gist.github.com/mkropat/1ba7ffd1d14f55f63fb3
+
+      section
+        h2 Rollbacks
+        ul
+          li Not supported in proof of concept
+          li Straightforward to add
+          li (Create rollback <code>.sql</code> script for each migration)
+
+      section
+        h2.bullet You Can Do It
+        p.bullet (It's not hard)
+        h4.bullet There is NO reason not to version
+        p.bullet (However you choose to do it)
+
+      section
+        h2 Questions?
 
     script(src='build/build.js')
